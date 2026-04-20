@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="390" viewBox="0 0 1120 390" role="img" aria-labelledby="title desc">
+  <title id="title">OpenWeatherMap Data Flow</title>
+  <desc id="desc">Flow from city input through OpenWeatherMap geocoding, weather and air pollution APIs into the database and analytics endpoints.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.14"/>
+    </filter>
+    <style>
+      .title { font: 700 24px Georgia, 'Times New Roman', serif; fill: #0f172a; }
+      .small { font: 400 12px Georgia, 'Times New Roman', serif; fill: #475569; }
+      .box-title { font: 700 15px Georgia, 'Times New Roman', serif; fill: #0f172a; }
+      .box-text { font: 400 12px Georgia, 'Times New Roman', serif; fill: #334155; }
+      .line { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #64748b; stroke-width: 1.7; fill: none; marker-end: url(#arrow); stroke-dasharray: 5 5; }
+    </style>
+  </defs>
+  <rect width="1120" height="390" fill="#f8fafc"/>
+  <text x="48" y="44" class="title">OpenWeatherMap Import and Analytics Flow</text>
+  <text x="48" y="68" class="small">Live city data is normalised into the same Station and Observation tables used by the CRUD API.</text>
+
+  <rect x="45" y="125" width="155" height="82" rx="16" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" filter="url(#shadow)"/>
+  <text x="75" y="156" class="box-title">City Input</text>
+  <text x="68" y="180" class="box-text">Yuxi, Chengdu,</text>
+  <text x="82" y="198" class="box-text">Leeds, York</text>
+
+  <rect x="260" y="125" width="170" height="82" rx="16" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2" filter="url(#shadow)"/>
+  <text x="292" y="154" class="box-title">Geocoding API</text>
+  <text x="292" y="178" class="box-text">city name to</text>
+  <text x="288" y="196" class="box-text">latitude/longitude</text>
+
+  <rect x="490" y="80" width="180" height="82" rx="16" fill="#fef9c3" stroke="#ca8a04" stroke-width="2" filter="url(#shadow)"/>
+  <text x="520" y="110" class="box-title">Weather API</text>
+  <text x="520" y="134" class="box-text">temperature</text>
+  <text x="520" y="152" class="box-text">humidity</text>
+
+  <rect x="490" y="205" width="180" height="96" rx="16" fill="#fef9c3" stroke="#ca8a04" stroke-width="2" filter="url(#shadow)"/>
+  <text x="520" y="235" class="box-title">Air Pollution API</text>
+  <text x="520" y="259" class="box-text">PM2.5, PM10</text>
+  <text x="520" y="277" class="box-text">NO2, O3, AQI</text>
+
+  <rect x="735" y="125" width="170" height="82" rx="16" fill="#dcfce7" stroke="#16a34a" stroke-width="2" filter="url(#shadow)"/>
+  <text x="772" y="154" class="box-title">Normalisation</text>
+  <text x="766" y="178" class="box-text">validate fields</text>
+  <text x="760" y="196" class="box-text">map AQI scale</text>
+
+  <rect x="955" y="80" width="135" height="82" rx="16" fill="#fff7ed" stroke="#f97316" stroke-width="2" filter="url(#shadow)"/>
+  <text x="986" y="110" class="box-title">Database</text>
+  <text x="982" y="134" class="box-text">Station</text>
+  <text x="976" y="152" class="box-text">Observation</text>
+
+  <rect x="955" y="220" width="135" height="82" rx="16" fill="#e0f2fe" stroke="#0284c7" stroke-width="2" filter="url(#shadow)"/>
+  <text x="986" y="250" class="box-title">Analytics</text>
+  <text x="980" y="274" class="box-text">summary, risk</text>
+  <text x="985" y="292" class="box-text">comparison</text>
+
+  <path class="line" d="M 200 166 L 260 166"/>
+  <path class="line" d="M 430 166 C 455 153, 465 132, 490 121"/>
+  <path class="line" d="M 430 166 C 455 186, 465 230, 490 253"/>
+  <path class="line" d="M 670 121 C 700 132, 710 146, 735 166"/>
+  <path class="line" d="M 670 253 C 700 235, 710 196, 735 166"/>
+  <path class="line" d="M 905 166 C 925 150, 935 128, 955 121"/>
+  <path class="line" d="M 1022 162 L 1022 220"/>
+  <path class="dash" d="M 735 188 C 690 332, 260 340, 122 207"/>
+  <text x="345" y="344" class="small">Imported observations can be queried again through public GET endpoints</text>
+</svg>
