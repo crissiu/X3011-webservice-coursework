@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.database import get_db
+from app.security import require_api_key
 from app.services.openweather import OpenWeatherError, import_current_weather_for_city
 
 router = APIRouter(prefix="/stations", tags=["stations"])
@@ -14,7 +15,11 @@ def read_stations(db: Session = Depends(get_db)):
 
 
 @router.post("", response_model=schemas.StationRead, status_code=status.HTTP_201_CREATED)
-def create_station(station_in: schemas.StationCreate, db: Session = Depends(get_db)):
+def create_station(
+    station_in: schemas.StationCreate,
+    _: None = Depends(require_api_key),
+    db: Session = Depends(get_db),
+):
     if crud.get_station_by_name(db, station_in.name):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Station name already exists")
     return crud.create_station(db, station_in)
@@ -27,6 +32,7 @@ def create_station(station_in: schemas.StationCreate, db: Session = Depends(get_
 )
 def create_station_from_openweather(
     city: str = Query(..., min_length=2, examples=["York"]),
+    _: None = Depends(require_api_key),
     db: Session = Depends(get_db),
 ):
     try:
@@ -44,7 +50,12 @@ def read_station(station_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/{station_id}", response_model=schemas.StationRead)
-def update_station(station_id: int, station_in: schemas.StationUpdate, db: Session = Depends(get_db)):
+def update_station(
+    station_id: int,
+    station_in: schemas.StationUpdate,
+    _: None = Depends(require_api_key),
+    db: Session = Depends(get_db),
+):
     station = crud.get_station(db, station_id)
     if not station:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
@@ -56,7 +67,11 @@ def update_station(station_id: int, station_in: schemas.StationUpdate, db: Sessi
 
 
 @router.delete("/{station_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_station(station_id: int, db: Session = Depends(get_db)):
+def delete_station(
+    station_id: int,
+    _: None = Depends(require_api_key),
+    db: Session = Depends(get_db),
+):
     station = crud.get_station(db, station_id)
     if not station:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")

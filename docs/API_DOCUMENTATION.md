@@ -18,6 +18,12 @@ OpenAPI schema is available at:
 /openapi.json
 ```
 
+## Authentication
+
+Write operations and external data import endpoints require the `X-API-Key` request header.
+
+For local development, set `APP_API_KEY` in `.env`, then click `Authorize` in Swagger UI and enter that value.
+
 ## Stations
 
 ### Create Station
@@ -109,6 +115,14 @@ Optional query parameters:
 Expected response: `200 OK`
 
 ## Analytics
+
+### City Comparison
+
+`GET /api/analytics/compare?cities=Leeds,Manchester,Birmingham&data_source=openweather`
+
+Compares multiple cities using the same observation database used by the CRUD and import endpoints. The response identifies the city with the highest average AQI, highest PM2.5, highest temperature, and lowest average AQI.
+
+Expected response: `200 OK`
 
 ### City Analytics
 

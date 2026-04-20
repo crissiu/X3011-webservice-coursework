@@ -29,6 +29,12 @@ copy .env.example .env
 
 Then add your OpenWeatherMap API key to `.env`.
 
+Protected write and import endpoints require an API key header:
+
+```text
+X-API-Key: coursework-local-key
+```
+
 Run the API:
 
 ```powershell
@@ -69,6 +75,7 @@ python -m pytest
 - `POST /api/stations/from-openweather?city=York` - create or update a real OpenWeatherMap station and store the current reading.
 - `GET /api/observations` - list observations, optionally filtered by city or station.
 - `POST /api/observations` - create an environmental observation.
+- `GET /api/analytics/compare?cities=Leeds,Manchester,Birmingham&data_source=openweather` - compare multiple cities by AQI, PM2.5, and temperature.
 - `GET /api/analytics/cities/{city}` - city-level climate and pollution summary.
 - `GET /api/analytics/risk-summary` - latest AQI risk ranking across stations.
 - `POST /api/import/openweather/current?city=Leeds` - import live weather and air pollution readings from OpenWeatherMap.
@@ -89,6 +96,7 @@ Recommended live-data demonstration flow:
 3. `GET /api/observations?data_source=openweather`
 4. `GET /api/analytics/cities/Leeds?data_source=openweather`
 5. `GET /api/analytics/risk-summary?data_source=openweather`
+6. `GET /api/analytics/compare?cities=Leeds,Manchester,Birmingham&data_source=openweather`
 
 To add a new city from real data, run `POST /api/stations/from-openweather?city=York`, then query `GET /api/observations?city=York&data_source=openweather` and `GET /api/analytics/cities/York?data_source=openweather`.
 

@@ -27,6 +27,7 @@ def override_get_db():
 app.dependency_overrides[get_db] = override_get_db
 Base.metadata.create_all(bind=engine)
 client = TestClient(app)
+API_HEADERS = {"X-API-Key": "coursework-local-key"}
 
 
 def test_root_endpoint():
@@ -37,7 +38,7 @@ def test_root_endpoint():
 
 
 def test_seed_and_analytics_flow():
-    seed_response = client.post("/api/seed/reset")
+    seed_response = client.post("/api/seed/reset", headers=API_HEADERS)
     assert seed_response.status_code == 201
 
     stations_response = client.get("/api/stations")
@@ -63,6 +64,12 @@ def test_seed_and_analytics_flow():
     assert openweather_filter_response.status_code == 200
     assert openweather_filter_response.json() == []
 
+    comparison_response = client.get("/api/analytics/compare?cities=Leeds,Manchester,Birmingham&data_source=demo")
+    assert comparison_response.status_code == 200
+    comparison = comparison_response.json()
+    assert comparison["cities_compared"] == 3
+    assert comparison["highest_aqi_city"] in {"Leeds", "Manchester", "Birmingham"}
+
 
 def test_create_update_delete_station():
     payload = {
@@ -74,21 +81,25 @@ def test_create_update_delete_station():
         "environment_type": "urban",
         "description": "Monitoring station near the waterfront.",
     }
-    create_response = client.post("/api/stations", json=payload)
+    unauthorised_response = client.post("/api/stations", json=payload)
+    assert unauthorised_response.status_code == 401
+
+    create_response = client.post("/api/stations", json=payload, headers=API_HEADERS)
     assert create_response.status_code == 201
     created = create_response.json()
 
-    duplicate_response = client.post("/api/stations", json=payload)
+    duplicate_response = client.post("/api/stations", json=payload, headers=API_HEADERS)
     assert duplicate_response.status_code == 409
 
     update_response = client.put(
         f"/api/stations/{created['id']}",
         json={"description": "Updated station description."},
+        headers=API_HEADERS,
     )
     assert update_response.status_code == 200
     assert update_response.json()["description"] == "Updated station description."
 
-    delete_response = client.delete(f"/api/stations/{created['id']}")
+    delete_response = client.delete(f"/api/stations/{created['id']}", headers=API_HEADERS)
     assert delete_response.status_code == 204
 
 
@@ -99,7 +110,7 @@ def test_openweather_aqi_mapping():
 
 
 def test_openweather_refresh_endpoint_validates_city_list():
-    response = client.post("/api/import/openweather/refresh?cities=,,")
+    response = client.post("/api/import/openweather/refresh?cities=,,", headers=API_HEADERS)
     assert response.status_code == 422
 
 

@@ -127,6 +127,35 @@ def get_city_analytics(db: Session, city: str, data_source: str | None = None) -
     return schemas.CityAnalytics(**row) if row else None
 
 
+def compare_cities(db: Session, cities: list[str], data_source: str | None = None) -> schemas.CityComparison:
+    analytics = [
+        city_analytics
+        for city in cities
+        if (city_analytics := get_city_analytics(db, city, data_source=data_source)) is not None
+    ]
+
+    def city_with_highest(field: str) -> str | None:
+        if not analytics:
+            return None
+        return max(analytics, key=lambda item: getattr(item, field)).city
+
+    def city_with_lowest(field: str) -> str | None:
+        if not analytics:
+            return None
+        return min(analytics, key=lambda item: getattr(item, field)).city
+
+    return schemas.CityComparison(
+        cities_requested=cities,
+        cities_compared=len(analytics),
+        data_source=data_source,
+        highest_aqi_city=city_with_highest("average_aqi"),
+        highest_pm25_city=city_with_highest("average_pm25"),
+        hottest_city=city_with_highest("average_temperature_c"),
+        lowest_aqi_city=city_with_lowest("average_aqi"),
+        results=analytics,
+    )
+
+
 def get_latest_risk_summary(db: Session, data_source: str | None = None) -> list[schemas.RiskSummary]:
     latest_query = select(
         models.Observation.station_id,

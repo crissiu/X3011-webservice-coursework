@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     app_name: str = "Urban Climate and Air Quality Analytics API"
     app_version: str = "0.1.0"
     database_url: str = "sqlite:///./urban_climate.db"
+    app_api_key: str = "coursework-local-key"
     openweather_api_key: str | None = None
     openweather_base_url: str = "https://api.openweathermap.org/data/2.5"
     openweather_geo_url: str = "https://api.openweathermap.org/geo/1.0"

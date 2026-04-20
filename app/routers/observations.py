@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.database import get_db
+from app.security import require_api_key
 
 router = APIRouter(prefix="/observations", tags=["observations"])
 
@@ -18,7 +19,11 @@ def read_observations(
 
 
 @router.post("", response_model=schemas.ObservationRead, status_code=status.HTTP_201_CREATED)
-def create_observation(observation_in: schemas.ObservationCreate, db: Session = Depends(get_db)):
+def create_observation(
+    observation_in: schemas.ObservationCreate,
+    _: None = Depends(require_api_key),
+    db: Session = Depends(get_db),
+):
     station = crud.get_station(db, observation_in.station_id)
     if not station:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
@@ -37,6 +42,7 @@ def read_observation(observation_id: int, db: Session = Depends(get_db)):
 def update_observation(
     observation_id: int,
     observation_in: schemas.ObservationUpdate,
+    _: None = Depends(require_api_key),
     db: Session = Depends(get_db),
 ):
     observation = crud.get_observation(db, observation_id)
@@ -48,7 +54,11 @@ def update_observation(
 
 
 @router.delete("/{observation_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_observation(observation_id: int, db: Session = Depends(get_db)):
+def delete_observation(
+    observation_id: int,
+    _: None = Depends(require_api_key),
+    db: Session = Depends(get_db),
+):
     observation = crud.get_observation(db, observation_id)
     if not observation:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Observation not found")

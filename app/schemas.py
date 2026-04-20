@@ -147,6 +147,17 @@ class CityAnalytics(BaseModel):
     latest_observation_at: datetime | None = None
 
 
+class CityComparison(BaseModel):
+    cities_requested: list[str]
+    cities_compared: int
+    data_source: str | None = None
+    highest_aqi_city: str | None = None
+    highest_pm25_city: str | None = None
+    hottest_city: str | None = None
+    lowest_aqi_city: str | None = None
+    results: list[CityAnalytics]
+
+
 class RiskSummary(BaseModel):
     station_id: int
     station_name: str
