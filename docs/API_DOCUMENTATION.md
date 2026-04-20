@@ -112,11 +112,28 @@ Returns the latest AQI status for each station ordered by risk.
 
 Expected response: `200 OK`
 
+## OpenWeatherMap Import
+
+### Import Current Weather and Air Pollution
+
+`POST /api/import/openweather/current?city=Leeds`
+
+This endpoint calls OpenWeatherMap Geocoding API to resolve city coordinates, Current Weather Data for temperature and humidity, and Air Pollution API for PM2.5, PM10, NO2, O3, and OpenWeather AQI. The result is stored as a new observation in the local database.
+
+Expected response: `201 Created`
+
+Notes:
+
+- Requires `OPENWEATHER_API_KEY` in the local `.env` file.
+- The API key must not be committed to GitHub.
+- OpenWeatherMap AQI uses a 1-5 scale; this project maps it to an internal 0-500 style score for consistency with existing observations.
+
 ## Error Codes
 
 - `404 Not Found` - requested station, observation, or analytics result does not exist.
 - `409 Conflict` - station name already exists.
 - `422 Unprocessable Entity` - request body or parameters fail validation.
+- `502 Bad Gateway` - external OpenWeatherMap import failed or API key is missing.
 
 ## Demo Data Reset
 

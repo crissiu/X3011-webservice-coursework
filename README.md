@@ -10,6 +10,7 @@ The API supports CRUD operations for monitoring stations and environmental obser
 - SQLAlchemy for database access and ORM models.
 - SQLite for local development, with a simple path to PostgreSQL if deployed later.
 - Pydantic for request and response validation.
+- OpenWeatherMap Current Weather Data and Air Pollution APIs for optional live data import.
 - Pytest and FastAPI TestClient for automated verification.
 
 ## Quick Start
@@ -19,6 +20,14 @@ Install dependencies:
 ```powershell
 python -m pip install -r requirements.txt
 ```
+
+Configure optional OpenWeatherMap import:
+
+```powershell
+copy .env.example .env
+```
+
+Then add your OpenWeatherMap API key to `.env`.
 
 Run the API:
 
@@ -61,6 +70,7 @@ python -m pytest
 - `POST /api/observations` - create an environmental observation.
 - `GET /api/analytics/cities/{city}` - city-level climate and pollution summary.
 - `GET /api/analytics/risk-summary` - latest AQI risk ranking across stations.
+- `POST /api/import/openweather/current?city=Leeds` - import live weather and air pollution readings from OpenWeatherMap.
 - `POST /api/seed/reset` - restore the built-in demonstration dataset.
 
 ## Coursework Deliverables
@@ -73,4 +83,4 @@ python -m pytest
 
 ## Dataset Plan
 
-The first implementation includes a small internal demonstration dataset so the API can be run and tested immediately. The final coursework version should cite and, where practical, import public air quality or climate data from sources such as DEFRA UK-AIR, data.gov.uk, OpenAQ, or OpenWeatherMap.
+The first implementation includes a small internal demonstration dataset so the API can be run and tested immediately. The project also supports optional live data import from OpenWeatherMap Current Weather Data and Air Pollution APIs when an API key is configured locally.

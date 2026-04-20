@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 
 from app.database import Base, get_db
 from app.main import app
+from app.services.openweather import openweather_aqi_to_project_aqi
 
 
 engine = create_engine(
@@ -81,3 +82,9 @@ def test_create_update_delete_station():
 
     delete_response = client.delete(f"/api/stations/{created['id']}")
     assert delete_response.status_code == 204
+
+
+def test_openweather_aqi_mapping():
+    assert openweather_aqi_to_project_aqi(1) == 25
+    assert openweather_aqi_to_project_aqi(3) == 125
+    assert openweather_aqi_to_project_aqi(5) == 250

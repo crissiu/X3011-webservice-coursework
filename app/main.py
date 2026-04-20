@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from app.config import settings
 from app.database import Base, engine
-from app.routers import analytics, observations, stations, utility
+from app.routers import analytics, imports, observations, stations, utility
 
 Base.metadata.create_all(bind=engine)
 
@@ -18,6 +18,7 @@ app = FastAPI(
 app.include_router(stations.router, prefix="/api")
 app.include_router(observations.router, prefix="/api")
 app.include_router(analytics.router, prefix="/api")
+app.include_router(imports.router, prefix="/api")
 app.include_router(utility.router, prefix="/api")
 
 

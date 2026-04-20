@@ -160,3 +160,21 @@ class RiskSummary(BaseModel):
 class SeedSummary(BaseModel):
     stations_created: int
     observations_created: int
+
+
+class OpenWeatherImportResult(BaseModel):
+    station_id: int
+    station_name: str
+    observation_id: int
+    city: str
+    country: str
+    observed_at: datetime
+    temperature_c: float
+    humidity_pct: float
+    pm25: float
+    pm10: float
+    no2: float
+    o3: float
+    openweather_aqi: int
+    project_aqi: int
+    source: str

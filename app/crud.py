@@ -25,6 +25,14 @@ def get_station_by_name(db: Session, name: str) -> models.Station | None:
     return db.scalar(stmt)
 
 
+def get_station_by_city_and_name(db: Session, city: str, name: str) -> models.Station | None:
+    stmt = select(models.Station).where(
+        func.lower(models.Station.city) == city.lower(),
+        func.lower(models.Station.name) == name.lower(),
+    )
+    return db.scalar(stmt)
+
+
 def create_station(db: Session, station_in: schemas.StationCreate) -> models.Station:
     station = models.Station(**station_in.model_dump())
     db.add(station)
