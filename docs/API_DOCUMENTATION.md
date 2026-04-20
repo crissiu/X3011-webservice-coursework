@@ -117,3 +117,11 @@ Expected response: `200 OK`
 - `404 Not Found` - requested station, observation, or analytics result does not exist.
 - `409 Conflict` - station name already exists.
 - `422 Unprocessable Entity` - request body or parameters fail validation.
+
+## Demo Data Reset
+
+If manual testing changes the built-in demo records, restore the default Leeds, Manchester, and Birmingham dataset with:
+
+```text
+POST /api/seed/reset
+```

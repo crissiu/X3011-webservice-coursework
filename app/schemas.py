@@ -19,7 +19,19 @@ class StationBase(BaseModel):
 
 
 class StationCreate(StationBase):
-    pass
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "name": "York City Centre Monitor",
+                "city": "York",
+                "country": "United Kingdom",
+                "latitude": 53.959,
+                "longitude": -1.0815,
+                "environment_type": "urban",
+                "description": "Urban monitoring station for temperature and air quality readings.",
+            }
+        }
+    )
 
 
 class StationUpdate(BaseModel):
@@ -38,6 +50,14 @@ class StationUpdate(BaseModel):
             return value
         return value.strip()
 
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "description": "Updated monitoring station used for coursework API demonstration."
+            }
+        }
+    )
+
 
 class ObservationBase(BaseModel):
     observed_at: datetime
@@ -54,6 +74,23 @@ class ObservationBase(BaseModel):
 class ObservationCreate(ObservationBase):
     station_id: int = Field(..., gt=0)
 
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "station_id": 1,
+                "observed_at": "2026-04-20T14:00:00",
+                "temperature_c": 16.4,
+                "humidity_pct": 62,
+                "pm25": 19.5,
+                "pm10": 28.3,
+                "no2": 34.1,
+                "o3": 38.6,
+                "aqi": 81,
+                "notes": "Moderate pollution level during afternoon traffic.",
+            }
+        }
+    )
+
 
 class ObservationUpdate(BaseModel):
     station_id: int | None = Field(default=None, gt=0)
@@ -66,6 +103,15 @@ class ObservationUpdate(BaseModel):
     o3: float | None = Field(default=None, ge=0)
     aqi: int | None = Field(default=None, ge=0, le=500)
     notes: str | None = None
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "aqi": 76,
+                "notes": "Corrected AQI after sensor calibration.",
+            }
+        }
+    )
 
 
 class ObservationRead(ObservationBase):

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import desc, func, select
+from sqlalchemy import delete, desc, func, select
 from sqlalchemy.orm import Session, joinedload
 
 from app import models, schemas
@@ -217,3 +217,10 @@ def seed_demo_data(db: Session) -> schemas.SeedSummary:
     db.add_all(observations)
     db.commit()
     return schemas.SeedSummary(stations_created=len(stations), observations_created=len(observations))
+
+
+def reset_demo_data(db: Session) -> schemas.SeedSummary:
+    db.execute(delete(models.Observation))
+    db.execute(delete(models.Station))
+    db.commit()
+    return seed_demo_data(db)

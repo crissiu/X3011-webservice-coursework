@@ -36,7 +36,7 @@ def test_root_endpoint():
 
 
 def test_seed_and_analytics_flow():
-    seed_response = client.post("/api/seed")
+    seed_response = client.post("/api/seed/reset")
     assert seed_response.status_code == 201
 
     stations_response = client.get("/api/stations")
@@ -49,6 +49,10 @@ def test_seed_and_analytics_flow():
     analytics = analytics_response.json()
     assert analytics["city"] == "Leeds"
     assert analytics["observation_count"] >= 1
+
+    city_filter_response = client.get("/api/observations?city=Leeds")
+    assert city_filter_response.status_code == 200
+    assert len(city_filter_response.json()) == 3
 
 
 def test_create_update_delete_station():

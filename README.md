@@ -38,6 +38,12 @@ Seed demonstration data:
 curl -X POST http://127.0.0.1:8000/api/seed
 ```
 
+Reset demonstration data after manual testing:
+
+```powershell
+curl -X POST http://127.0.0.1:8000/api/seed/reset
+```
+
 Run tests:
 
 ```powershell
@@ -55,6 +61,7 @@ python -m pytest
 - `POST /api/observations` - create an environmental observation.
 - `GET /api/analytics/cities/{city}` - city-level climate and pollution summary.
 - `GET /api/analytics/risk-summary` - latest AQI risk ranking across stations.
+- `POST /api/seed/reset` - restore the built-in demonstration dataset.
 
 ## Coursework Deliverables
 
