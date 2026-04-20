@@ -178,6 +178,7 @@ Notes:
 
 ## Error Codes
 
+- `401 Unauthorized` - protected write/import endpoint called without a valid `X-API-Key` header.
 - `404 Not Found` - requested station, observation, or analytics result does not exist.
 - `409 Conflict` - station name already exists.
 - `422 Unprocessable Entity` - request body or parameters fail validation.

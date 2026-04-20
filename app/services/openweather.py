@@ -101,22 +101,30 @@ def import_current_weather_for_city(db: Session, city: str) -> schemas.OpenWeath
         db.commit()
         db.refresh(station)
 
-    observation = models.Observation(
-        station_id=station.id,
-        observed_at=observed_at,
-        temperature_c=float((weather.get("main") or {}).get("temp")),
-        humidity_pct=float((weather.get("main") or {}).get("humidity")),
-        pm25=float(components.get("pm2_5", 0)),
-        pm10=float(components.get("pm10", 0)),
-        no2=float(components.get("no2", 0)),
-        o3=float(components.get("o3", 0)),
-        aqi=openweather_aqi_to_project_aqi(openweather_aqi),
-        notes=(
+    observation = crud.get_observation_by_station_and_time(db, station.id, observed_at)
+    observation_values = {
+        "temperature_c": float((weather.get("main") or {}).get("temp")),
+        "humidity_pct": float((weather.get("main") or {}).get("humidity")),
+        "pm25": float(components.get("pm2_5", 0)),
+        "pm10": float(components.get("pm10", 0)),
+        "no2": float(components.get("no2", 0)),
+        "o3": float(components.get("o3", 0)),
+        "aqi": openweather_aqi_to_project_aqi(openweather_aqi),
+        "notes": (
             "Imported from OpenWeatherMap current weather and air pollution APIs. "
             f"OpenWeather AQI scale value: {openweather_aqi}."
         ),
-    )
-    db.add(observation)
+    }
+    if observation is None:
+        observation = models.Observation(
+            station_id=station.id,
+            observed_at=observed_at,
+            **observation_values,
+        )
+        db.add(observation)
+    else:
+        for field, value in observation_values.items():
+            setattr(observation, field, value)
     db.commit()
     db.refresh(observation)
 

@@ -77,6 +77,18 @@ def get_observation(db: Session, observation_id: int) -> models.Observation | No
     return db.scalar(stmt)
 
 
+def get_observation_by_station_and_time(
+    db: Session,
+    station_id: int,
+    observed_at: datetime,
+) -> models.Observation | None:
+    stmt = select(models.Observation).where(
+        models.Observation.station_id == station_id,
+        models.Observation.observed_at == observed_at,
+    )
+    return db.scalar(stmt)
+
+
 def create_observation(db: Session, observation_in: schemas.ObservationCreate) -> models.Observation:
     observation = models.Observation(**observation_in.model_dump())
     db.add(observation)

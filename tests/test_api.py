@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 
 from app.database import Base, get_db
 from app.main import app
+from app import crud, models
 from app.services.openweather import openweather_aqi_to_project_aqi
 
 
@@ -117,3 +118,39 @@ def test_openweather_refresh_endpoint_validates_city_list():
 def test_openweather_station_create_route_is_documented():
     schema = app.openapi()
     assert "/api/stations/from-openweather" in schema["paths"]
+
+
+def test_observation_lookup_by_station_and_time():
+    db = TestingSessionLocal()
+    try:
+        station = models.Station(
+            name="Deduplication Test Station",
+            city="Test City",
+            country="GB",
+            latitude=1.0,
+            longitude=1.0,
+            environment_type="external_api",
+        )
+        db.add(station)
+        db.commit()
+        db.refresh(station)
+
+        created = models.Observation(
+            station_id=station.id,
+            observed_at=__import__("datetime").datetime(2026, 4, 20, 12, 0),
+            temperature_c=10,
+            humidity_pct=50,
+            pm25=1,
+            pm10=2,
+            no2=3,
+            o3=4,
+            aqi=25,
+        )
+        db.add(created)
+        db.commit()
+
+        found = crud.get_observation_by_station_and_time(db, station.id, created.observed_at)
+        assert found is not None
+        assert found.id == created.id
+    finally:
+        db.close()

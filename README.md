@@ -111,3 +111,5 @@ To add a new city from real data, run `POST /api/stations/from-openweather?city=
 ## Dataset Plan
 
 The first implementation includes a small internal demonstration dataset so the API can be run and tested immediately. The project also supports optional live data import from OpenWeatherMap Current Weather Data and Air Pollution APIs when an API key is configured locally.
+
+Repeated OpenWeatherMap imports update an existing observation when the same station and timestamp are returned, preventing accidental duplication during demonstrations.
