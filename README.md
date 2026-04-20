@@ -72,6 +72,7 @@ This project includes `render.yaml` for deploying as a FastAPI web service on Re
 Set these environment variables in the deployment platform:
 
 ```text
+PYTHON_VERSION=3.12.10
 APP_API_KEY=coursework-local-key
 OPENWEATHER_API_KEY=your_openweathermap_api_key
 ```

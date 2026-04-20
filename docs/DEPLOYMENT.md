@@ -11,6 +11,7 @@ Render is recommended for this coursework because it supports FastAPI directly, 
 Set these in the hosting dashboard:
 
 ```text
+PYTHON_VERSION=3.12.10
 APP_API_KEY=coursework-local-key
 OPENWEATHER_API_KEY=your_openweathermap_api_key
 ```
@@ -32,6 +33,8 @@ Render should use:
 Build Command: pip install -r requirements.txt
 Start Command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
 ```
+
+The repository includes `.python-version` and `render.yaml` settings to pin deployment to Python `3.12.10`. This avoids Python 3.14 dependency wheel issues with packages such as `pydantic-core`.
 
 ## Post-Deployment Test Flow
 
