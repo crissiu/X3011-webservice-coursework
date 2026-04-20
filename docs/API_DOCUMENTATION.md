@@ -172,7 +172,7 @@ Authentication: not required.
 
 `POST /api/import/openweather/refresh?cities=Leeds,Manchester,Birmingham`
 
-Deletes existing OpenWeatherMap imported stations and observations, then imports fresh live data for the requested cities. Built-in demo data remains untouched.
+Imports fresh live data for the requested cities while preserving existing OpenWeatherMap-backed stations and historical observations. If OpenWeatherMap returns the same station and timestamp again, the existing observation is updated instead of duplicated.
 
 Expected response: `201 Created`
 

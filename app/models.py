@@ -8,6 +8,7 @@ from app.database import Base
 
 class Station(Base):
     __tablename__ = "stations"
+    __table_args__ = {"sqlite_autoincrement": True}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False, unique=True)
@@ -28,6 +29,7 @@ class Station(Base):
 
 class Observation(Base):
     __tablename__ = "observations"
+    __table_args__ = {"sqlite_autoincrement": True}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     station_id: Mapped[int] = mapped_column(

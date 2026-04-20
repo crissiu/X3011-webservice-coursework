@@ -94,7 +94,7 @@ See `docs/DEPLOYMENT.md` for the full deployment checklist.
 - `GET /api/analytics/risk-summary` - latest AQI risk ranking across stations.
 - `POST /api/import/openweather/current?city=Leeds` - import live weather and air pollution readings from OpenWeatherMap. No API key required.
 - `POST /api/import/openweather/batch?cities=Leeds,Manchester,Birmingham` - import live data for multiple cities. No API key required.
-- `POST /api/import/openweather/refresh?cities=Leeds,Manchester,Birmingham` - replace existing live OpenWeatherMap records with fresh imports. No API key required.
+- `POST /api/import/openweather/refresh?cities=Leeds,Manchester,Birmingham` - import fresh OpenWeatherMap readings while preserving existing live-data stations and history. No API key required.
 - `POST /api/seed/reset` - restore the built-in demonstration dataset.
 
 Use `data_source=openweather` on query endpoints to focus on live imported data:
@@ -126,4 +126,4 @@ To add a new city from real data, run `POST /api/stations/from-openweather?city=
 
 The first implementation includes a small internal demonstration dataset so the API can be run and tested immediately. The project also supports optional live data import from OpenWeatherMap Current Weather Data and Air Pollution APIs when an API key is configured locally.
 
-Repeated OpenWeatherMap imports update an existing observation when the same station and timestamp are returned, preventing accidental duplication during demonstrations.
+Repeated OpenWeatherMap imports update an existing observation when the same station and timestamp are returned, preventing accidental duplication during demonstrations. Imports for other cities are preserved, so adding Chengdu and then refreshing Leeds will not delete Chengdu.

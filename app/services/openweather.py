@@ -153,7 +153,8 @@ def import_current_weather_for_cities(db: Session, cities: list[str]) -> schemas
 
 
 def refresh_current_weather_for_cities(db: Session, cities: list[str]) -> schemas.OpenWeatherBatchImportResult:
-    crud.delete_openweather_data(db)
+    # Refresh means "fetch the latest live readings" while preserving existing
+    # OpenWeatherMap-backed stations and historical observations.
     return import_current_weather_for_cities(db, cities)
 
 
