@@ -65,6 +65,19 @@ Run tests:
 python -m pytest
 ```
 
+## Deployment
+
+This project includes `render.yaml` for deploying as a FastAPI web service on Render.
+
+Set these environment variables in the deployment platform:
+
+```text
+APP_API_KEY=coursework-local-key
+OPENWEATHER_API_KEY=your_openweathermap_api_key
+```
+
+See `docs/DEPLOYMENT.md` for the full deployment checklist.
+
 ## Core Endpoints
 
 - `GET /api/stations` - list all monitoring stations.
