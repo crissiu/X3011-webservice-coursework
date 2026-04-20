@@ -29,7 +29,7 @@ copy .env.example .env
 
 Then add your OpenWeatherMap API key to `.env`.
 
-Protected write and import endpoints require an API key header:
+Protected manual write and destructive utility endpoints require an API key header:
 
 ```text
 X-API-Key: coursework-local-key
@@ -72,15 +72,15 @@ python -m pytest
 - `GET /api/stations/{station_id}` - read one station with observations.
 - `PUT /api/stations/{station_id}` - update station metadata.
 - `DELETE /api/stations/{station_id}` - delete a station and its observations.
-- `POST /api/stations/from-openweather?city=York` - create or update a real OpenWeatherMap station and store the current reading.
+- `POST /api/stations/from-openweather?city=York` - create or update a real OpenWeatherMap station and store the current reading. This single-city convenience endpoint is public for easy demonstration.
 - `GET /api/observations` - list observations, optionally filtered by city or station.
 - `POST /api/observations` - create an environmental observation.
 - `GET /api/analytics/compare?cities=Leeds,Manchester,Birmingham&data_source=openweather` - compare multiple cities by AQI, PM2.5, and temperature.
 - `GET /api/analytics/cities/{city}` - city-level climate and pollution summary.
 - `GET /api/analytics/risk-summary` - latest AQI risk ranking across stations.
-- `POST /api/import/openweather/current?city=Leeds` - import live weather and air pollution readings from OpenWeatherMap.
-- `POST /api/import/openweather/batch?cities=Leeds,Manchester,Birmingham` - import live data for multiple cities.
-- `POST /api/import/openweather/refresh?cities=Leeds,Manchester,Birmingham` - replace existing live OpenWeatherMap records with fresh imports.
+- `POST /api/import/openweather/current?city=Leeds` - import live weather and air pollution readings from OpenWeatherMap. No API key required.
+- `POST /api/import/openweather/batch?cities=Leeds,Manchester,Birmingham` - import live data for multiple cities. No API key required.
+- `POST /api/import/openweather/refresh?cities=Leeds,Manchester,Birmingham` - replace existing live OpenWeatherMap records with fresh imports. No API key required.
 - `POST /api/seed/reset` - restore the built-in demonstration dataset.
 
 Use `data_source=openweather` on query endpoints to focus on live imported data:

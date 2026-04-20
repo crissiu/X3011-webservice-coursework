@@ -20,7 +20,7 @@ OpenAPI schema is available at:
 
 ## Authentication
 
-Write operations and external data import endpoints require the `X-API-Key` request header.
+Manual write operations such as creating, updating, or deleting records require the `X-API-Key` request header. OpenWeatherMap city import endpoints are intentionally public so examiners can quickly query and import real city data without authorising first.
 
 For local development, set `APP_API_KEY` in `.env`, then click `Authorize` in Swagger UI and enter that value.
 
@@ -71,6 +71,8 @@ Expected response: `204 No Content`
 Creates an OpenWeatherMap-backed station for the requested city if it does not already exist, calls OpenWeatherMap for current weather and air pollution data, and stores the result as an observation in the database.
 
 Expected response: `201 Created`
+
+Authentication: not required for this convenience endpoint.
 
 Follow-up queries:
 
@@ -154,6 +156,8 @@ This endpoint calls OpenWeatherMap Geocoding API to resolve city coordinates, Cu
 
 Expected response: `201 Created`
 
+Authentication: not required.
+
 ### Batch Import Current Data
 
 `POST /api/import/openweather/batch?cities=Leeds,Manchester,Birmingham`
@@ -162,6 +166,8 @@ Imports live weather and air pollution observations for multiple cities and stor
 
 Expected response: `201 Created`
 
+Authentication: not required.
+
 ### Refresh Live OpenWeatherMap Data
 
 `POST /api/import/openweather/refresh?cities=Leeds,Manchester,Birmingham`
@@ -169,6 +175,8 @@ Expected response: `201 Created`
 Deletes existing OpenWeatherMap imported stations and observations, then imports fresh live data for the requested cities. Built-in demo data remains untouched.
 
 Expected response: `201 Created`
+
+Authentication: not required.
 
 Notes:
 

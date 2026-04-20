@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 
 from app import schemas
 from app.database import get_db
-from app.security import require_api_key
 from app.services.openweather import (
     OpenWeatherError,
     import_current_weather_for_cities,
@@ -17,7 +16,6 @@ router = APIRouter(prefix="/import", tags=["imports"])
 @router.post("/openweather/current", response_model=schemas.OpenWeatherImportResult, status_code=status.HTTP_201_CREATED)
 def import_openweather_current(
     city: str = Query(..., min_length=2, examples=["Leeds"]),
-    _: None = Depends(require_api_key),
     db: Session = Depends(get_db),
 ):
     try:
@@ -37,7 +35,6 @@ def import_openweather_batch(
         min_length=2,
         description="Comma-separated city list, for example: Leeds,Manchester,Birmingham",
     ),
-    _: None = Depends(require_api_key),
     db: Session = Depends(get_db),
 ):
     city_list = [city.strip() for city in cities.split(",") if city.strip()]
@@ -60,7 +57,6 @@ def refresh_openweather_data(
         min_length=2,
         description="Comma-separated city list. Existing OpenWeatherMap data is replaced.",
     ),
-    _: None = Depends(require_api_key),
     db: Session = Depends(get_db),
 ):
     city_list = [city.strip() for city in cities.split(",") if city.strip()]

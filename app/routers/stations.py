@@ -32,7 +32,6 @@ def create_station(
 )
 def create_station_from_openweather(
     city: str = Query(..., min_length=2, examples=["York"]),
-    _: None = Depends(require_api_key),
     db: Session = Depends(get_db),
 ):
     try:

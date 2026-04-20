@@ -111,13 +111,17 @@ def test_openweather_aqi_mapping():
 
 
 def test_openweather_refresh_endpoint_validates_city_list():
-    response = client.post("/api/import/openweather/refresh?cities=,,", headers=API_HEADERS)
+    response = client.post("/api/import/openweather/refresh?cities=,,")
     assert response.status_code == 422
 
 
 def test_openweather_station_create_route_is_documented():
     schema = app.openapi()
     assert "/api/stations/from-openweather" in schema["paths"]
+    assert "security" not in schema["paths"]["/api/stations/from-openweather"]["post"]
+    assert "security" not in schema["paths"]["/api/import/openweather/current"]["post"]
+    assert "security" not in schema["paths"]["/api/import/openweather/batch"]["post"]
+    assert "security" not in schema["paths"]["/api/import/openweather/refresh"]["post"]
 
 
 def test_observation_lookup_by_station_and_time():
