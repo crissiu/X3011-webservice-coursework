@@ -1,0 +1,30 @@
+flowchart TB
+    client["Client / Swagger UI / Examiner"]
+    api["FastAPI Application"]
+    auth["API Key Authentication\n(X-API-Key for protected write operations)"]
+    routers["API Routers\nstations | observations | analytics | imports | utility"]
+    service["OpenWeatherMap Service\nGeocoding + Current Weather + Air Pollution"]
+    orm["SQLAlchemy ORM"]
+    db[("SQLite Database\nStation + Observation")]
+    openweather["OpenWeatherMap APIs"]
+    deploy["Render Deployment\nPublic /docs endpoint"]
+
+    client -->|"HTTP requests"| api
+    deploy --> api
+    api --> auth
+    api --> routers
+    routers -->|"CRUD and queries"| orm
+    routers -->|"live city import"| service
+    service -->|"external API calls"| openweather
+    service -->|"normalised observations"| orm
+    orm --> db
+
+    classDef interface fill:#e8f4ff,stroke:#2f6f9f,stroke-width:1.5px,color:#0f2d3f;
+    classDef app fill:#eef8ee,stroke:#3b7f45,stroke-width:1.5px,color:#123c18;
+    classDef data fill:#fff6df,stroke:#ad7c13,stroke-width:1.5px,color:#4a3200;
+    classDef external fill:#f7ebff,stroke:#7b4bb0,stroke-width:1.5px,color:#35195a;
+
+    class client,deploy interface;
+    class api,auth,routers,service,orm app;
+    class db data;
+    class openweather external;
