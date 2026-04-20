@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+pytest-cache-files-*/
+.ruff_cache/
+.env
+.venv/
+venv/
+urban_climate.db
+*.db
+*.sqlite
+*.sqlite3
+htmlcov/
+.coverage
+dist/
+build/

@@ -1,0 +1,47 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+
+from app import crud, schemas
+from app.database import get_db
+
+router = APIRouter(prefix="/stations", tags=["stations"])
+
+
+@router.get("", response_model=list[schemas.StationRead])
+def read_stations(db: Session = Depends(get_db)):
+    return crud.list_stations(db)
+
+
+@router.post("", response_model=schemas.StationRead, status_code=status.HTTP_201_CREATED)
+def create_station(station_in: schemas.StationCreate, db: Session = Depends(get_db)):
+    if crud.get_station_by_name(db, station_in.name):
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Station name already exists")
+    return crud.create_station(db, station_in)
+
+
+@router.get("/{station_id}", response_model=schemas.StationDetail)
+def read_station(station_id: int, db: Session = Depends(get_db)):
+    station = crud.get_station(db, station_id)
+    if not station:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
+    return station
+
+
+@router.put("/{station_id}", response_model=schemas.StationRead)
+def update_station(station_id: int, station_in: schemas.StationUpdate, db: Session = Depends(get_db)):
+    station = crud.get_station(db, station_id)
+    if not station:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
+    if station_in.name:
+        existing = crud.get_station_by_name(db, station_in.name)
+        if existing and existing.id != station_id:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Station name already exists")
+    return crud.update_station(db, station, station_in)
+
+
+@router.delete("/{station_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_station(station_id: int, db: Session = Depends(get_db)):
+    station = crud.get_station(db, station_id)
+    if not station:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Station not found")
+    crud.delete_station(db, station)
