@@ -54,10 +54,19 @@ def delete_station(db: Session, station: models.Station) -> None:
     db.commit()
 
 
-def list_observations(db: Session, city: str | None = None, station_id: int | None = None) -> list[models.Observation]:
+def list_observations(
+    db: Session,
+    city: str | None = None,
+    station_id: int | None = None,
+    data_source: str | None = None,
+) -> list[models.Observation]:
     stmt = select(models.Observation).order_by(desc(models.Observation.observed_at))
+    if city or data_source:
+        stmt = stmt.join(models.Station)
     if city:
-        stmt = stmt.join(models.Station).where(func.lower(models.Station.city) == city.lower())
+        stmt = stmt.where(func.lower(models.Station.city) == city.lower())
+    if data_source:
+        stmt = _apply_data_source_filter(stmt, data_source)
     if station_id:
         stmt = stmt.where(models.Observation.station_id == station_id)
     return list(db.scalars(stmt).all())
@@ -93,7 +102,7 @@ def delete_observation(db: Session, observation: models.Observation) -> None:
     db.commit()
 
 
-def get_city_analytics(db: Session, city: str) -> schemas.CityAnalytics | None:
+def get_city_analytics(db: Session, city: str, data_source: str | None = None) -> schemas.CityAnalytics | None:
     stmt = (
         select(
             models.Station.city.label("city"),
@@ -112,19 +121,21 @@ def get_city_analytics(db: Session, city: str) -> schemas.CityAnalytics | None:
         .where(func.lower(models.Station.city) == city.lower())
         .group_by(models.Station.city)
     )
+    if data_source:
+        stmt = _apply_data_source_filter(stmt, data_source)
     row = db.execute(stmt).mappings().first()
     return schemas.CityAnalytics(**row) if row else None
 
 
-def get_latest_risk_summary(db: Session) -> list[schemas.RiskSummary]:
-    latest_per_station = (
-        select(
-            models.Observation.station_id,
-            func.max(models.Observation.observed_at).label("latest_observed_at"),
-        )
-        .group_by(models.Observation.station_id)
-        .subquery()
+def get_latest_risk_summary(db: Session, data_source: str | None = None) -> list[schemas.RiskSummary]:
+    latest_query = select(
+        models.Observation.station_id,
+        func.max(models.Observation.observed_at).label("latest_observed_at"),
     )
+    if data_source:
+        latest_query = latest_query.join(models.Station)
+        latest_query = _apply_data_source_filter(latest_query, data_source)
+    latest_per_station = latest_query.group_by(models.Observation.station_id).subquery()
 
     stmt = (
         select(
@@ -157,6 +168,14 @@ def get_latest_risk_summary(db: Session) -> list[schemas.RiskSummary]:
             risk = "good"
         results.append(schemas.RiskSummary(**row, risk_level=risk))
     return results
+
+
+def _apply_data_source_filter(stmt, data_source: str):
+    if data_source == "openweather":
+        return stmt.where(models.Station.environment_type == "external_api")
+    if data_source == "demo":
+        return stmt.where(models.Station.environment_type != "external_api")
+    return stmt
 
 
 def seed_demo_data(db: Session) -> schemas.SeedSummary:
@@ -232,3 +251,10 @@ def reset_demo_data(db: Session) -> schemas.SeedSummary:
     db.execute(delete(models.Station))
     db.commit()
     return seed_demo_data(db)
+
+
+def delete_openweather_data(db: Session) -> None:
+    station_ids = select(models.Station.id).where(models.Station.environment_type == "external_api")
+    db.execute(delete(models.Observation).where(models.Observation.station_id.in_(station_ids)))
+    db.execute(delete(models.Station).where(models.Station.environment_type == "external_api"))
+    db.commit()

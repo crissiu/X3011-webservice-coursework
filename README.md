@@ -71,7 +71,23 @@ python -m pytest
 - `GET /api/analytics/cities/{city}` - city-level climate and pollution summary.
 - `GET /api/analytics/risk-summary` - latest AQI risk ranking across stations.
 - `POST /api/import/openweather/current?city=Leeds` - import live weather and air pollution readings from OpenWeatherMap.
+- `POST /api/import/openweather/batch?cities=Leeds,Manchester,Birmingham` - import live data for multiple cities.
+- `POST /api/import/openweather/refresh?cities=Leeds,Manchester,Birmingham` - replace existing live OpenWeatherMap records with fresh imports.
 - `POST /api/seed/reset` - restore the built-in demonstration dataset.
+
+Use `data_source=openweather` on query endpoints to focus on live imported data:
+
+- `GET /api/observations?city=Leeds&data_source=openweather`
+- `GET /api/analytics/cities/Leeds?data_source=openweather`
+- `GET /api/analytics/risk-summary?data_source=openweather`
+
+Recommended live-data demonstration flow:
+
+1. `POST /api/seed/reset`
+2. `POST /api/import/openweather/refresh?cities=Leeds,Manchester,Birmingham`
+3. `GET /api/observations?data_source=openweather`
+4. `GET /api/analytics/cities/Leeds?data_source=openweather`
+5. `GET /api/analytics/risk-summary?data_source=openweather`
 
 ## Coursework Deliverables
 

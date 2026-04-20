@@ -55,6 +55,14 @@ def test_seed_and_analytics_flow():
     assert city_filter_response.status_code == 200
     assert len(city_filter_response.json()) == 3
 
+    demo_filter_response = client.get("/api/observations?city=Leeds&data_source=demo")
+    assert demo_filter_response.status_code == 200
+    assert len(demo_filter_response.json()) == 3
+
+    openweather_filter_response = client.get("/api/observations?city=Leeds&data_source=openweather")
+    assert openweather_filter_response.status_code == 200
+    assert openweather_filter_response.json() == []
+
 
 def test_create_update_delete_station():
     payload = {
@@ -88,3 +96,8 @@ def test_openweather_aqi_mapping():
     assert openweather_aqi_to_project_aqi(1) == 25
     assert openweather_aqi_to_project_aqi(3) == 125
     assert openweather_aqi_to_project_aqi(5) == 250
+
+
+def test_openweather_refresh_endpoint_validates_city_list():
+    response = client.post("/api/import/openweather/refresh?cities=,,")
+    assert response.status_code == 422

@@ -91,6 +91,7 @@ Optional query parameters:
 
 - `city`
 - `station_id`
+- `data_source` - use `openweather` for live imported data or `demo` for built-in seed data.
 
 Expected response: `200 OK`
 
@@ -104,6 +105,8 @@ Returns observation count, average pollutant levels, average AQI, maximum AQI, h
 
 Expected response: `200 OK`
 
+Use `GET /api/analytics/cities/Leeds?data_source=openweather` to calculate analytics from live OpenWeatherMap imports only.
+
 ### Risk Summary
 
 `GET /api/analytics/risk-summary`
@@ -112,6 +115,8 @@ Returns the latest AQI status for each station ordered by risk.
 
 Expected response: `200 OK`
 
+Use `GET /api/analytics/risk-summary?data_source=openweather` to rank live OpenWeatherMap stations only.
+
 ## OpenWeatherMap Import
 
 ### Import Current Weather and Air Pollution
@@ -119,6 +124,22 @@ Expected response: `200 OK`
 `POST /api/import/openweather/current?city=Leeds`
 
 This endpoint calls OpenWeatherMap Geocoding API to resolve city coordinates, Current Weather Data for temperature and humidity, and Air Pollution API for PM2.5, PM10, NO2, O3, and OpenWeather AQI. The result is stored as a new observation in the local database.
+
+Expected response: `201 Created`
+
+### Batch Import Current Data
+
+`POST /api/import/openweather/batch?cities=Leeds,Manchester,Birmingham`
+
+Imports live weather and air pollution observations for multiple cities and stores them in the same database tables used by the CRUD and analytics endpoints.
+
+Expected response: `201 Created`
+
+### Refresh Live OpenWeatherMap Data
+
+`POST /api/import/openweather/refresh?cities=Leeds,Manchester,Birmingham`
+
+Deletes existing OpenWeatherMap imported stations and observations, then imports fresh live data for the requested cities. Built-in demo data remains untouched.
 
 Expected response: `201 Created`
 

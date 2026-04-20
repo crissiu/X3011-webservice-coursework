@@ -139,6 +139,16 @@ def import_current_weather_for_city(db: Session, city: str) -> schemas.OpenWeath
     )
 
 
+def import_current_weather_for_cities(db: Session, cities: list[str]) -> schemas.OpenWeatherBatchImportResult:
+    results = [import_current_weather_for_city(db, city) for city in cities]
+    return schemas.OpenWeatherBatchImportResult(imported_count=len(results), results=results)
+
+
+def refresh_current_weather_for_cities(db: Session, cities: list[str]) -> schemas.OpenWeatherBatchImportResult:
+    crud.delete_openweather_data(db)
+    return import_current_weather_for_cities(db, cities)
+
+
 def _raise_for_openweather_error(response: httpx.Response, dataset_name: str) -> None:
     if response.is_success:
         return

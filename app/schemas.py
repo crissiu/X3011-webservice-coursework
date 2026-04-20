@@ -178,3 +178,9 @@ class OpenWeatherImportResult(BaseModel):
     openweather_aqi: int
     project_aqi: int
     source: str
+
+
+class OpenWeatherBatchImportResult(BaseModel):
+    imported_count: int
+    results: list[OpenWeatherImportResult]
+    source: str = "OpenWeatherMap Current Weather Data and Air Pollution API"

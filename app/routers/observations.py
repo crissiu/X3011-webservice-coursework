@@ -11,9 +11,10 @@ router = APIRouter(prefix="/observations", tags=["observations"])
 def read_observations(
     city: str | None = Query(default=None),
     station_id: int | None = Query(default=None, gt=0),
+    data_source: str | None = Query(default=None, pattern="^(demo|openweather)$"),
     db: Session = Depends(get_db),
 ):
-    return crud.list_observations(db, city=city, station_id=station_id)
+    return crud.list_observations(db, city=city, station_id=station_id, data_source=data_source)
 
 
 @router.post("", response_model=schemas.ObservationRead, status_code=status.HTTP_201_CREATED)
