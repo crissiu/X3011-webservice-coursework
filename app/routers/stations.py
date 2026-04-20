@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.database import get_db
+from app.services.openweather import OpenWeatherError, import_current_weather_for_city
 
 router = APIRouter(prefix="/stations", tags=["stations"])
 
@@ -17,6 +18,21 @@ def create_station(station_in: schemas.StationCreate, db: Session = Depends(get_
     if crud.get_station_by_name(db, station_in.name):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Station name already exists")
     return crud.create_station(db, station_in)
+
+
+@router.post(
+    "/from-openweather",
+    response_model=schemas.OpenWeatherImportResult,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_station_from_openweather(
+    city: str = Query(..., min_length=2, examples=["York"]),
+    db: Session = Depends(get_db),
+):
+    try:
+        return import_current_weather_for_city(db, city)
+    except OpenWeatherError as exc:
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(exc)) from exc
 
 
 @router.get("/{station_id}", response_model=schemas.StationDetail)

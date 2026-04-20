@@ -58,6 +58,19 @@ Expected response: `200 OK`
 
 Expected response: `204 No Content`
 
+### Create Station From OpenWeatherMap
+
+`POST /api/stations/from-openweather?city=York`
+
+Creates an OpenWeatherMap-backed station for the requested city if it does not already exist, calls OpenWeatherMap for current weather and air pollution data, and stores the result as an observation in the database.
+
+Expected response: `201 Created`
+
+Follow-up queries:
+
+- `GET /api/observations?city=York&data_source=openweather`
+- `GET /api/analytics/cities/York?data_source=openweather`
+
 ## Observations
 
 ### Create Observation

@@ -66,6 +66,7 @@ python -m pytest
 - `GET /api/stations/{station_id}` - read one station with observations.
 - `PUT /api/stations/{station_id}` - update station metadata.
 - `DELETE /api/stations/{station_id}` - delete a station and its observations.
+- `POST /api/stations/from-openweather?city=York` - create or update a real OpenWeatherMap station and store the current reading.
 - `GET /api/observations` - list observations, optionally filtered by city or station.
 - `POST /api/observations` - create an environmental observation.
 - `GET /api/analytics/cities/{city}` - city-level climate and pollution summary.
@@ -88,6 +89,8 @@ Recommended live-data demonstration flow:
 3. `GET /api/observations?data_source=openweather`
 4. `GET /api/analytics/cities/Leeds?data_source=openweather`
 5. `GET /api/analytics/risk-summary?data_source=openweather`
+
+To add a new city from real data, run `POST /api/stations/from-openweather?city=York`, then query `GET /api/observations?city=York&data_source=openweather` and `GET /api/analytics/cities/York?data_source=openweather`.
 
 ## Coursework Deliverables
 
